@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>وكالة المدرسة</title>
+
+<style>
+body {margin:0;font-family:Arial;background:#f4f6f9;}
+.sidebar {
+  width:220px;
+  background:#1e73be;
+  color:#fff;
+  height:100vh;
+  position:fixed;
+  padding:15px;
+}
+.sidebar h3 {text-align:center;}
+.sidebar button {
+  width:100%;
+  margin:5px 0;
+  background:#155a96;
+}
+.main {
+  margin-right:230px;
+  padding:20px;
+}
+.card {
+  background:#fff;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:15px;
+}
+input, textarea {
+  width:100%;
+  margin:5px 0;
+  padding:8px;
+}
+button {
+  padding:8px;
+  border:none;
+  border-radius:5px;
+  color:#fff;
+  background:#1e73be;
+  cursor:pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+<h3>وكالة المدرسة</h3>
+<p>قرطبة 2</p>
+<button onclick="show('teachers')">تقييم المعلمين</button>
+<button onclick="show('activities')">تقارير الأنشطة</button>
+<button onclick="show('lessons')">حصص تطبيقية</button>
+<button onclick="show('issues')">مساءلات</button>
+<button onclick="show('thanks')">شكر وتقدير</button>
+</div>
+
+<div class="main">
+
+<div id="teachers" class="card">
+<h3>تقييم المعلمين</h3>
+<input id="tName" placeholder="اسم المعلم">
+<input id="tScore" placeholder="الدرجة">
+<textarea id="tNote"></textarea>
+<button onclick="add('teachers')">إضافة</button>
+<button onclick="printPDF()">🧾 طباعة PDF</button>
+<ul id="teachersList"></ul>
+</div>
+
+<div id="activities" class="card" style="display:none">
+<h3>تقارير الأنشطة</h3>
+<input id="aTitle" placeholder="عنوان">
+<textarea id="aDesc"></textarea>
+<button onclick="add('activities')">إضافة</button>
+<ul id="activitiesList"></ul>
+</div>
+
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("data")) || {
+teachers:[], activities:[], lessons:[], issues:[], thanks:[]
+};
+
+function save(){localStorage.setItem("data",JSON.stringify(data));}
+
+function show(section){
+document.querySelectorAll('.card').forEach(c=>c.style.display='none');
+document.getElementById(section).style.display='block';
+}
+
+function add(type){
+if(type==="teachers"){
+data.teachers.push({
+name:tName.value,score:tScore.value,note:tNote.value
+});
+}
+if(type==="activities"){
+data.activities.push({
+title:aTitle.value,desc:aDesc.value
+});
+}
+save();
+render();
+}
+
+function render(){
+teachersList.innerHTML="";
+data.teachers.forEach(i=>{
+teachersList.innerHTML+=`<li>${i.name} - ${i.score}</li>`;
+});
+}
+
+function printPDF(){
+window.print();
+}
+
+render();
+</script>
+
+</body>
+</html>
